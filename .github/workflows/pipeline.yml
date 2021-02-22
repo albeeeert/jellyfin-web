@@ -12,17 +12,17 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: Run a one-line script
-        run: 
-          echo build application
-          sh build.sh
+      - name: Build application
+        script: 
+          - echo build application
+          - sh build.sh
 
   test:
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v2
-      - name: Run a one-line script
-        run: 
-          echo run test suite
+      - name: Run test suite
+        script: 
+          - echo run test suite
 
