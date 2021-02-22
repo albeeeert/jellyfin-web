@@ -10,19 +10,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Build application
-        script: 
-          - echo build application
-          - sh build.sh
+    script: sh build.sh
 
   test:
     runs-on: ubuntu-latest
+    script: echo "run test suite"
 
-    steps:
-      - uses: actions/checkout@v2
-      - name: Run test suite
-        script: 
-          - echo run test suite
 
