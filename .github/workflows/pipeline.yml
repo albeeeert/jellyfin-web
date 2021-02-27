@@ -25,21 +25,13 @@ jobs:
   Build:
     stage: build
       steps:
-        tags:
-          - node
-        before_script: 
-          - yarn config set cache-folder .yarn
-          - yarn install 
-        script:
-          - yarn build
+        - yarn config set cache-folder .yarn
+        - yarn install 
+        - yarn build
 
   Test:
     stage: test
       steps:
-        tags:
-        - node
-        before_script: 
-          - yarn config set cache-folder .yarn
-        script:
-          - echo "run test suite here"
+        - yarn config set cache-folder .yarn
+        - echo "run test suite here"
 
