@@ -24,14 +24,14 @@ stages:
 jobs:
   Build:
     stage: build
-      steps:
-        - yarn config set cache-folder .yarn
-        - yarn install 
-        - yarn build
+    script:
+      - yarn config set cache-folder .yarn
+      - yarn install 
+      - yarn build
 
   Test:
     stage: test
-      steps:
-        - yarn config set cache-folder .yarn
-        - echo "run test suite here"
+    script:
+      - yarn config set cache-folder .yarn
+      - echo "run test suite here"
 
