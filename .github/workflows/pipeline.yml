@@ -5,33 +5,28 @@ on:
   pull_request:
     branches: [ master ]
 
-
-
-image: node:9.4.0
-
 cache:
   paths:
     - node_modules/
     - .yarn
 
-before_script:  
-  - apt-get update -qq && apt-get install
-
-stages:
-  - build
-  - test
 
 jobs:
   Build:
-    stage: build
-    script:
-      - yarn config set cache-folder .yarn
-      - yarn install 
-      - yarn build
+    runs-on: ubuntu-latest
+    steps:
+    - id: set-cache
+      run: yarn config set cache-folder .yarn
+    - id: install-packages
+      run: yarn install
+    - id: build
+      run: yarn build
 
   Test:
-    stage: test
-    script:
-      - yarn config set cache-folder .yarn
-      - echo "run test suite here"
+    runs-on: ubuntu-latest
+    steps:
+      - id: set-cache
+        run: yarn config set cache-folder .yarn
+      - id: run-tests
+        run: echo "run test suite here"
 
