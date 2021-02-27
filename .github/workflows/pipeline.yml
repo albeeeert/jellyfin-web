@@ -5,24 +5,36 @@ on:
   pull_request:
     branches: [ master ]
 
-  workflow_dispatch:
+image: node:9.4.0
 
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Build application
-        run: 
-          echo "build application"
-          yarn install
-          yarn build:development
+cache:
+  paths:
+    - node_modules/
+    - .yarn
 
-  test:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - name: Run test suite
-        run: 
-          echo "run test suite"
+before_script:  
+  - apt-get update -qq && apt-get install
+
+stages:
+  - build
+  - test
+
+Build:
+  stage: build
+  tags:
+    - node
+  before_script: 
+    - yarn config set cache-folder .yarn
+    - yarn install 
+  script:
+    - yarn build
+
+Test:
+  stage: test
+  tags:
+  - node
+  before_script: 
+    - yarn config set cache-folder .yarn
+  script:
+    -echo "run test suite here"
 
