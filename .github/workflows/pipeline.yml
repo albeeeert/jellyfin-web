@@ -15,7 +15,8 @@ jobs:
       - name: Build application
         run: 
           echo "build application"
-          sh build.sh
+          yarn install
+          yarn build:development
 
   test:
     runs-on: ubuntu-latest
