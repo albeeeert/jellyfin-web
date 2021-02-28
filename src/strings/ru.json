@@ -1504,5 +1504,9 @@
     "LabelMaxAudiobookResume": "Макс. возобновление аудиокниги, мин:",
     "AllowVppTonemappingHelp": "Полный аппаратный тонмаппинг без использования фильтра OpenCL. В настоящее время работает только при перекодировании видео со встроенными метаданными HDR10.",
     "EnableVppTonemapping": "Включить VPP-тонмаппинг",
-    "EnableEnhancedNvdecDecoder": "Включить улучшенный декодер NVDEC"
+    "EnableEnhancedNvdecDecoder": "Включить улучшенный декодер NVDEC",
+    "DisablePlugin": "Отключить плагин",
+    "EnablePlugin": "Включить плагин",
+    "Framerate": "Ч-та кадров",
+    "DirectPlayHelp": "Исходный файл полностью совместим с этим клиентом, а сеанс получает файл без изменений."
 }
