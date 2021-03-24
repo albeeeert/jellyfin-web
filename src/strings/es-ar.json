@@ -1504,5 +1504,9 @@
     "MessageChromecastConnectionError": "Su receptor de Google Cast no puede comunicarse con el servidor de Jellyfin. Compruebe la conexión y vuelve a intentarlo.",
     "AllowVppTonemappingHelp": "Mapeo de tonos completo basado en hardware sin usar el filtro OpenCL. Actualmente solo funciona al transcodificar videos con metadatos HDR10 incrustados.",
     "EnableVppTonemapping": "Habilitar el mapeo de tonos VPP",
-    "EnableEnhancedNvdecDecoder": "Habilitar decodificador NVDEC mejorado"
+    "EnableEnhancedNvdecDecoder": "Habilitar decodificador NVDEC mejorado",
+    "DisablePlugin": "Deshabilitar Plugin",
+    "EnablePlugin": "Habilitar Plugin",
+    "Framerate": "Tasa de Cuadros",
+    "DirectPlayHelp": "El Archivo fuente es enteramente compatible con este cliente y la sesión esta recibiendo el archivo sin modificaciones"
 }

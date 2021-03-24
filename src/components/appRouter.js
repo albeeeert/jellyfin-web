@@ -471,18 +471,9 @@ class AppRouter {
         return null;
     }
 
-    getMaxBandwidthIOS() {
-        return 800000;
-    }
-
     onApiClientCreated(e, newApiClient) {
         newApiClient.normalizeImageOptions = this.normalizeImageOptions;
-
-        if (browser.iOS) {
-            newApiClient.getMaxBandwidth = this.getMaxBandwidthIOS;
-        } else {
-            newApiClient.getMaxBandwidth = this.getMaxBandwidth;
-        }
+        newApiClient.getMaxBandwidth = this.getMaxBandwidth;
 
         Events.off(newApiClient, 'requestfail', this.onRequestFail);
         Events.on(newApiClient, 'requestfail', this.onRequestFail);
@@ -519,6 +510,7 @@ class AppRouter {
                 return response.json();
             }).then(data => {
                 if (data !== null && data.StartupWizardCompleted === false) {
+                    ServerConnections.setLocalApiClient(firstResult.ApiClient);
                     Dashboard.navigate('wizardstart.html');
                 } else {
                     this.handleConnectionResult(firstResult);
