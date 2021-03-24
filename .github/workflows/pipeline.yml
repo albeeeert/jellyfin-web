@@ -5,23 +5,19 @@ on:
   pull_request:
     branches: [ master ]
 
-  workflow_dispatch:
 
 jobs:
-  build:
+  Build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Build application
-        run: 
-          echo "build application"
-          sh build.sh
+    - id: install-packages
+      run: yarn install
+    - id: build
+      run: yarn build
 
-  test:
+  Test:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Run test suite
-        run: 
-          echo "run test suite"
+      - id: run-tests
+        run: echo "run test suite here"
 
