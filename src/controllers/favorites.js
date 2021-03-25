@@ -264,6 +264,37 @@ import ServerConnections from '../components/ServerConnections';
             itemsContainer.getItemsHtml = getItemsHtmlFn(sections[i]).bind(instance);
             itemsContainer.parentContainer = dom.parentWithClass(itemsContainer, 'verticalSection');
         }
+
+        
+    }
+
+    // show message if no content
+    function showNoItemsMessage(content, sections) {
+
+        const elems = sections.querySelector('.itemsContainer');
+        let hasContent = false;
+
+        // check if there is content to determine whether to show
+        for (let i = 0, length = elems.length; i < length; i++) {
+            const itemsContainer = elems[i];
+            if (itemsContainer.children) {
+                hasContent = true;
+            }
+        }
+
+        // construct html element to show if no content
+        if (!hasContent) {
+            let html = '';
+            html += '<div class="noItemsMessage centerMessage">';
+            html += '<h1>' + globalize.translate('MessageNothingHere') + '</h1>';
+            html += '<p>' + globalize.translate('MessageNoCollectionsAvailable') + '</p>';
+            html += '</div>';
+
+            content.innerHTML += html;
+
+            console.log("Should show msg");
+        }
+
     }
 
 class FavoritesTab {
@@ -273,6 +304,8 @@ class FavoritesTab {
         this.apiClient = ServerConnections.currentApiClient();
         this.sectionsContainer = view.querySelector('.sections');
         createSections(this, this.sectionsContainer, this.apiClient);
+        showNoItemsMessage(view, this.sectionsContainer);
+
     }
 
     onResume(options) {
