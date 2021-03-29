@@ -12,8 +12,10 @@ jobs:
     steps:
     - id: install-packages
       run: yarn install
+      working-directory: ./
     - id: build
       run: yarn build
+      working-directory: ./
 
   Test:
     runs-on: ubuntu-latest
