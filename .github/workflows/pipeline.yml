@@ -22,11 +22,7 @@ jobs:
     - id: install-packages
       run: yarn install  --frozen-lockfile
     - id: build
-      run: yarn build
-
-  Test:
-    runs-on: ubuntu-latest
-    steps:
-      - id: run-tests
-        run: echo "run test suite here"
+      run: yarn build:development
+    - id: run-tests
+      run: echo "run test suite here"
 
