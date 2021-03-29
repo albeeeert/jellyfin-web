@@ -13,6 +13,8 @@ jobs:
       run:
         working-directory: ./
     steps:
+    - id: test
+      run: pwd
     - id: install-packages
       run: yarn install  --frozen-lockfile
     - id: build
