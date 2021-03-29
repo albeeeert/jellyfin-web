@@ -270,9 +270,6 @@ import ServerConnections from '../components/ServerConnections';
 
     // show message if no content
     function showNoItemsMessage(content, sections) {
-
-        console.log("inside function")
-
         const elems = sections.querySelector('.itemsContainer');
         let hasContent = false;
 
@@ -304,10 +301,7 @@ class FavoritesTab {
         this.apiClient = ServerConnections.currentApiClient();
         this.sectionsContainer = view.querySelector('.sections');
         createSections(this, this.sectionsContainer, this.apiClient);
-
-        console.log("Hello!");
         showNoItemsMessage(view, this.sectionsContainer);
-        this.onResume();
     }
 
     onResume(options) {
