@@ -269,28 +269,37 @@ import ServerConnections from '../components/ServerConnections';
     }
 
     // show message if no content
-    function showNoItemsMessage(content, sections) {
-        const elems = sections.querySelector('.itemsContainer');
+    function toggleNoItemsMessage(container, items) {
+
         let hasContent = false;
 
         // check if there is content to determine whether to show
-        for (let i = 0, length = elems.length; i < length; i++) {
-            const itemsContainer = elems[i];
-            if (itemsContainer.children) {
+        for (let i = 0, length = items.length; i < length; i++) {
+            const itemsContainer = items[i];
+            console.log("favorite amount in section: ", itemsContainer.children.length, " kpl");
+            if (itemsContainer.children.length > 0) {
+                console.log("a favorite detected!");
                 hasContent = true;
             }
         }
 
-        // construct html element to show if no content
+        // show no items message element if no content
+        if (hasContent) {
+            container.classList.add("hide");
+        } 
+        
         if (!hasContent) {
-            let html = '';
-            html += '<div class="noItemsMessage centerMessage">';
-            html += '<h1>' + globalize.translate('MessageNothingHere') + '</h1>';
-            html += '<p>' + globalize.translate('MessageNoFavoritesAvailable') + '</p>';
-            html += '</div>';
-
-            content.innerHTML += html;
+            container.classList.remove("hide");
         }
+
+    }
+
+    function createNoItemsMessage(container) {
+        
+        let html = '';
+        html += '<h1>' + globalize.translate('MessageNothingHere') + '</h1>';
+        html += '<p>' + globalize.translate('MessageNoFavoritesAvailable') + '</p>';
+        container.innerHTML = html;
 
     }
 
@@ -300,24 +309,32 @@ class FavoritesTab {
         this.params = params;
         this.apiClient = ServerConnections.currentApiClient();
         this.sectionsContainer = view.querySelector('.sections');
+        this.msgContainer = view.querySelector('.noItemsMessage');
         createSections(this, this.sectionsContainer, this.apiClient);
-        showNoItemsMessage(view, this.sectionsContainer);
+        createNoItemsMessage(this.msgContainer);
     }
 
     onResume(options) {
+        console.log("FAVORITES OPENED!");
         const promises = (this.apiClient, []);
         const view = this.view;
         const elems = this.sectionsContainer.querySelectorAll('.itemsContainer');
+        
+        const noItemsMessage = this.msgContainer;
+        // hide noItemsMessage and show later on if needed
+        noItemsMessage.classList.add("hide");
 
         for (const elem of elems) {
             promises.push(elem.resume(options));
         }
 
-        Promise.all(promises).then(function () {
+        Promise.all(promises)
+        .then(function () {
             if (options.autoFocus) {
                 focusManager.autoFocus(view);
             }
-        });
+        })
+        .then(toggleNoItemsMessage(noItemsMessage, elems));
     }
 
     onPause() {
