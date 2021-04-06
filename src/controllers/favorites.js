@@ -226,6 +226,7 @@ import ServerConnections from '../components/ServerConnections';
     }
 
     function createSections(instance, elem, apiClient) {
+        console.log("createSections called!");
         const sections = getSections();
         let html = '';
 
@@ -265,32 +266,26 @@ import ServerConnections from '../components/ServerConnections';
             itemsContainer.parentContainer = dom.parentWithClass(itemsContainer, 'verticalSection');
         }
 
-        
     }
 
     // show message if no content
-    function toggleNoItemsMessage(container, items) {
+    function toggleNoItemsMessage(apiClient, container) {
 
-        let hasContent = false;
+        // fetch favorite count
+        apiClient.getItems(apiClient.getCurrentUserId(), {Filters: 'IsFavorite', Recursive: 'true'})
+        .then((result) => {
 
-        // check if there is content to determine whether to show
-        for (let i = 0, length = items.length; i < length; i++) {
-            const itemsContainer = items[i];
-            console.log("favorite amount in section: ", itemsContainer.children.length, " kpl");
-            if (itemsContainer.children.length > 0) {
-                console.log("a favorite detected!");
-                hasContent = true;
+            let favoriteCount = result.Items.length;
+            
+            // show no items message element if no content
+            if (favoriteCount) {
+                container.classList.add("hide");
+            } 
+            
+            if (!favoriteCount) {
+                container.classList.remove("hide");
             }
-        }
-
-        // show no items message element if no content
-        if (hasContent) {
-            container.classList.add("hide");
-        } 
-        
-        if (!hasContent) {
-            container.classList.remove("hide");
-        }
+        });
 
     }
 
@@ -315,14 +310,12 @@ class FavoritesTab {
     }
 
     onResume(options) {
-        console.log("FAVORITES OPENED!");
+
         const promises = (this.apiClient, []);
         const view = this.view;
         const elems = this.sectionsContainer.querySelectorAll('.itemsContainer');
-        
+        const apiClient = this.apiClient;
         const noItemsMessage = this.msgContainer;
-        // hide noItemsMessage and show later on if needed
-        noItemsMessage.classList.add("hide");
 
         for (const elem of elems) {
             promises.push(elem.resume(options));
@@ -334,7 +327,7 @@ class FavoritesTab {
                 focusManager.autoFocus(view);
             }
         })
-        .then(toggleNoItemsMessage(noItemsMessage, elems));
+        .then(toggleNoItemsMessage(apiClient, noItemsMessage));
     }
 
     onPause() {
