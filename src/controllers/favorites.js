@@ -268,16 +268,13 @@ import ServerConnections from '../components/ServerConnections';
 
     }
 
-    // show message if no content
     function toggleNoItemsMessage(apiClient, container) {
 
-        // fetch favorite count
         apiClient.getItems(apiClient.getCurrentUserId(), {Filters: 'IsFavorite', Recursive: 'true'})
         .then((result) => {
 
             let favoriteCount = result.Items.length;
             
-            // show no items message element if no content
             if (favoriteCount) {
                 container.classList.add("hide");
             } 
@@ -285,8 +282,8 @@ import ServerConnections from '../components/ServerConnections';
             if (!favoriteCount) {
                 container.classList.remove("hide");
             }
-        });
 
+        });
     }
 
     function createNoItemsMessage(container) {
@@ -307,6 +304,12 @@ class FavoritesTab {
         this.msgContainer = view.querySelector('.noItemsMessage');
         createSections(this, this.sectionsContainer, this.apiClient);
         createNoItemsMessage(this.msgContainer);
+
+        // observe media section changes to check if noItemsMessage has to be shown
+        const mutationObserverConfig = {childList: true, subtree: true};
+        const observer = new MutationObserver(() => toggleNoItemsMessage(this.apiClient, this.msgContainer));
+        observer.observe(this.sectionsContainer, mutationObserverConfig);
+
     }
 
     onResume(options) {
