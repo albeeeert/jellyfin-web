@@ -226,7 +226,6 @@ import ServerConnections from '../components/ServerConnections';
     }
 
     function createSections(instance, elem, apiClient) {
-        console.log("createSections called!");
         const sections = getSections();
         let html = '';
 
