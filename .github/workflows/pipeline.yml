@@ -20,9 +20,10 @@ jobs:
         pwd
         ls -la
     - id: install-packages
-      run: yarn install  --frozen-lockfile
+      run:  |
+        npm ci install
+        npm ci install selenium-webdriver
     - id: build
-      run: yarn build:development
+      run: npm run build:development
     - id: run-tests
-      run: echo "run test suite here"
-
+      run: npm tests/testsuite.js
