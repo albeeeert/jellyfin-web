@@ -1,5 +1,5 @@
 import { appRouter } from '../components/appRouter';
-import cardBuilder from '../components/cardbuilder/cardBuilder';
+import cardBuilder, { getCardsHtml } from '../components/cardbuilder/cardBuilder';
 import dom from '../scripts/dom';
 import globalize from '../scripts/globalize';
 import { appHost } from '../components/apphost';
@@ -267,7 +267,56 @@ import ServerConnections from '../components/ServerConnections';
 
     }
 
-    function toggleNoItemsMessage(apiClient, container) {
+    function createRecommendations(instance, apiClient, container) {
+        // html for items, append them into the recommendations div
+        
+        let html = '';
+        html += '<div is="emby-scroller" class="padded-top-focusscale padded-bottom-focusscale" data-centerfocus="true"><div is="emby-itemscontainer" class="itemsContainer scrollSlider focuscontainer-x" data-monitor="markfavorite"></div></div>';
+        container.innerHTML = html;
+
+        const itemsContainer = container.querySelector('.itemsContainer');
+
+        const options = {
+            MediaTypes: 'Audio',
+            Filters: 'IsNotFolder',
+            SortBy: 'PlayCount',
+            SortOrder: 'Descending',
+            Recursive: true,
+            Limit: 10,
+        }
+
+
+        itemsContainer.fetchData = apiClient.getItems(apiClient.getCurrentUserId(), options);
+
+        const section = {
+            // name: 'Recommendations',
+            // types: 'Audio',
+            // shape: getPosterShape(),
+            // showTitle: true,
+            // overlayPlayButton: true,
+            // overlayText: false,
+            // centerText: true
+            name: 'Songs',
+            types: 'Audio',
+            shape: getSquareShape(),
+            preferThumb: false,
+            showTitle: true,
+            overlayText: false,
+            showParentTitle: true,
+            centerText: true,
+            overlayMoreButton: true,
+            action: 'instantmix',
+            coverImage: true
+        }
+
+        itemsContainer.getCardsHtml = getItemsHtmlFn(section).bind(instance);
+
+        getItemsHtmlFn(section).then(result => console.log(result));
+        itemsContainer.parentContainer = container;
+
+    };
+
+    function toggleNoItemsContent(apiClient, container) {
 
         apiClient.getItems(apiClient.getCurrentUserId(), {Filters: 'IsFavorite', Recursive: 'true'})
         .then((result) => {
@@ -301,12 +350,15 @@ class FavoritesTab {
         this.apiClient = ServerConnections.currentApiClient();
         this.sectionsContainer = view.querySelector('.sections');
         this.msgContainer = view.querySelector('.noItemsMessage');
+        this.recommendationsContainer = view.querySelector('.recommendations');
         createSections(this, this.sectionsContainer, this.apiClient);
         createNoItemsMessage(this.msgContainer);
+        createRecommendations(this, this.apiClient, this.recommendationsContainer);
 
-        // observe media section changes to check if noItemsMessage has to be shown
+        // observe media section changes to check if noItemsContent has to be shown
+        this.noItemsContent = view.querySelector('.noItemsContent');
         const mutationObserverConfig = {childList: true, subtree: true};
-        const observer = new MutationObserver(() => toggleNoItemsMessage(this.apiClient, this.msgContainer));
+        const observer = new MutationObserver(() => toggleNoItemsContent(this.apiClient, this.noItemsContent));
         observer.observe(this.sectionsContainer, mutationObserverConfig);
 
     }
@@ -317,7 +369,7 @@ class FavoritesTab {
         const view = this.view;
         const elems = this.sectionsContainer.querySelectorAll('.itemsContainer');
         const apiClient = this.apiClient;
-        const noItemsMessage = this.msgContainer;
+        const noItemsContent = this.noItemsContent;
 
         for (const elem of elems) {
             promises.push(elem.resume(options));
@@ -329,7 +381,7 @@ class FavoritesTab {
                 focusManager.autoFocus(view);
             }
         })
-        .then(toggleNoItemsMessage(apiClient, noItemsMessage));
+        .then(toggleNoItemsContent(apiClient, noItemsContent));
     }
 
     onPause() {
