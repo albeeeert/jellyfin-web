@@ -8,6 +8,7 @@ import focusManager from '../components/focusManager';
 import '../elements/emby-itemscontainer/emby-itemscontainer';
 import '../elements/emby-scroller/emby-scroller';
 import ServerConnections from '../components/ServerConnections';
+import imageLoader from '../components/images/imageLoader';
 
 /* eslint-disable indent */
 
@@ -271,13 +272,27 @@ import ServerConnections from '../components/ServerConnections';
         // html for items, append them into the recommendations div
         
         let html = '';
-        html += '<div is="emby-scroller" class="padded-top-focusscale padded-bottom-focusscale" data-centerfocus="true"><div is="emby-itemscontainer" class="itemsContainer scrollSlider focuscontainer-x" data-monitor="markfavorite"></div></div>';
+        html += '<div class="sectionTitleContainer sectionTitleContainer-cards padded-left">';
+
+        if (layoutManager.tv) {
+            html += '<h2 class="sectionTitle sectionTitle-cards">' + globalize.translate('FavoriteRecommendations') + '</h2>';
+        } else {
+            html += '<h2 class="sectionTitle sectionTitle-cards">';
+            html += globalize.translate('FavoriteRecommendations');
+            html += '</h2>';
+        }
+        html += '</div>';
+        html += '<div is="emby-scroller" class="padded-top-focusscale padded-bottom-focusscale" data-centerfocus="true">';
+        html += '<div is="emby-itemscontainer" class="itemsContainer scrollSlider focuscontainer-x" data-monitor="markfavorite">';
+        html += '</div>';
+        html += '</div>';
+
+        container.innerHTML = '';
         container.innerHTML = html;
 
         const itemsContainer = container.querySelector('.itemsContainer');
-
+        
         const options = {
-            MediaTypes: 'Audio',
             Filters: 'IsNotFolder',
             SortBy: 'PlayCount',
             SortOrder: 'Descending',
@@ -285,34 +300,25 @@ import ServerConnections from '../components/ServerConnections';
             Limit: 10,
         }
 
+        apiClient.getItems(apiClient.getCurrentUserId(), options)
+        .then((result) => {
+            let cardsHtml = cardBuilder.getCardsHtml({
+                items: result.Items,
+                preferThumb: false,
+                showTitle: true,
+                overlayText: false,
+                showParentTitle: true,
+                centerText: true,
+                overlayMoreButton: true,
+                coverImage: true
+            });
+            itemsContainer.innerHTML = cardsHtml;
+            
+        });
 
-        itemsContainer.fetchData = apiClient.getItems(apiClient.getCurrentUserId(), options);
-
-        const section = {
-            // name: 'Recommendations',
-            // types: 'Audio',
-            // shape: getPosterShape(),
-            // showTitle: true,
-            // overlayPlayButton: true,
-            // overlayText: false,
-            // centerText: true
-            name: 'Songs',
-            types: 'Audio',
-            shape: getSquareShape(),
-            preferThumb: false,
-            showTitle: true,
-            overlayText: false,
-            showParentTitle: true,
-            centerText: true,
-            overlayMoreButton: true,
-            action: 'instantmix',
-            coverImage: true
-        }
-
-        itemsContainer.getCardsHtml = getItemsHtmlFn(section).bind(instance);
-
-        getItemsHtmlFn(section).then(result => console.log(result));
         itemsContainer.parentContainer = container;
+        
+        imageLoader.lazyChildren(itemsContainer);
 
     };
 

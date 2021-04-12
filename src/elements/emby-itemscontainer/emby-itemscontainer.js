@@ -433,6 +433,8 @@ import Sortable from 'sortablejs';
     function onDataFetched(result) {
         const items = result.Items || result;
 
+        console.log('Items in IC: ', items);
+
         const parentContainer = this.parentContainer;
         if (parentContainer) {
             if (items.length) {
