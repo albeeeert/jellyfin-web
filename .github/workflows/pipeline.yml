@@ -15,15 +15,16 @@ jobs:
     steps:
     - name: Checkout
       uses: actions/checkout@v2
-    - id: test
-      run: |
-        pwd
-        ls -la
     - id: install-packages
-      run:  |
-        npm ci install
-        npm ci install selenium-webdriver
+      run:  npm ci install
     - id: build
       run: npm run build:development
+    - id: install-test-dependencies
+      run: |
+        apt-get install chromium-browser
+        npm install chromedriver -g
+        npm install https://gitlab.com/gitlab-org/gitlab-selenium-server.git -g
+        nohup chromedriver --port=4444 --url-base=wd/hub &
+        nohup gitlab-selenium-server &
     - id: run-tests
-      run: npm tests/testsuite.js
+      run: node tests/testsuite.js

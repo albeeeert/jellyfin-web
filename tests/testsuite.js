@@ -1,31 +1,41 @@
-var webdriver = require('selenium-webdriver');
+"use strict";
+var webdriver = require("selenium-webdriver")
+ 
 
-async function runSampleTest () {
-  let driver;
-  try {
-    driver = new webdriver.Builder().
-      withCapabilities({
-        'browserName': 'chrome',
-        'platform': 'WIN10',
-        'version': 'latest',
-        'client_key': process.env.TESTINGBOT_KEY,
-        'client_secret': process.env.TESTINGBOT_SECRET,
-        'name': (process.env.CI_JOB_ID ? ("GitLab Build " + process.env.CI_JOB_ID) : "Simple Test")
-      }).
-      usingServer("https://" + process.env.TESTINGBOT_KEY + ":" + process.env.TESTINGBOT_SECRET +
-                  "@hub.testingbot.com/wd/hub").
-      build();
+var capabilities = {
+    name : 'Basic Test Example',
+    build : '1.0',
+    version : '70',
+    platform : 'Windows 10',
+    browserName : 'Chrome'
+};
 
-    await driver.get('https://www.google.com');
 
-    var title = await driver.getTitle();
-    console.log("title is: " + title);
-  } catch (e) {
-    console.log(e);
-  } finally {
-    if (driver) {
-      await driver.quit();
+async function basicExample(){
+    try{
+        var driver = new webdriver.Builder()
+            .withCapabilities(capabilities)
+            .build();
+
+
+        await driver.get('http://google.com');
+
+        await driver.getTitle().then(function(title) {
+                    console.log("The title is: " + title)
+            });
+
+        driver.quit();
     }
-  }
+
+    catch(err){
+        handleFailure(err, driver)
+    }
+
 }
-runSampleTest();
+
+basicExample();
+
+function handleFailure(err, driver) {
+     console.error('Something went wrong!\n', err.stack, '\n');
+     driver.quit();
+}

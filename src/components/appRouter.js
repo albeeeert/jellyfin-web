@@ -425,11 +425,7 @@ class AppRouter {
     onRequestFail(e, data) {
         const apiClient = this;
 
-        // 401 means the credentials are broken
-        if (data.status === 401) {
-            console.debug('Invalid stored credentials, redirecting to login');
-            appRouter.showLocalLogin(apiClient.serverId());
-        } else if (data.status === 403) {
+        if (data.status === 403) {
             if (data.errorCode === 'ParentalControl') {
                 const isCurrentAllowed = appRouter.currentRouteInfo ? (appRouter.currentRouteInfo.route.anonymous || appRouter.currentRouteInfo.route.startup) : true;
 
@@ -450,7 +446,7 @@ class AppRouter {
 
     normalizeImageOptions(options) {
         let setQuality;
-        if (options.maxWidth || options.width || options.maxHeight || options.height) {
+        if (options.maxWidth || options.width || options.maxHeight || options.height || options.fillWidth || options.fillHeight) {
             setQuality = true;
         }
 
