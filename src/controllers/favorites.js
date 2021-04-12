@@ -313,12 +313,12 @@ import imageLoader from '../components/images/imageLoader';
                 coverImage: true
             });
             itemsContainer.innerHTML = cardsHtml;
-            
+            imageLoader.lazyChildren(itemsContainer);
         });
 
         itemsContainer.parentContainer = container;
         
-        imageLoader.lazyChildren(itemsContainer);
+        
 
     };
 
