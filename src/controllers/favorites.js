@@ -265,11 +265,9 @@ import imageLoader from '../components/images/imageLoader';
             itemsContainer.getItemsHtml = getItemsHtmlFn(sections[i]).bind(instance);
             itemsContainer.parentContainer = dom.parentWithClass(itemsContainer, 'verticalSection');
         }
-
     }
 
     function createRecommendations(instance, apiClient, container) {
-        // html for items, append them into the recommendations div
         
         let html = '';
         html += '<div class="sectionTitleContainer sectionTitleContainer-cards padded-left">';
@@ -317,9 +315,6 @@ import imageLoader from '../components/images/imageLoader';
         });
 
         itemsContainer.parentContainer = container;
-        
-        
-
     };
 
     function toggleNoItemsContent(apiClient, container) {
@@ -327,16 +322,14 @@ import imageLoader from '../components/images/imageLoader';
         apiClient.getItems(apiClient.getCurrentUserId(), {Filters: 'IsFavorite', Recursive: 'true'})
         .then((result) => {
 
-            let favoriteCount = result.Items.length;
-            
+            const favoriteCount = result.Items.length;
+
             if (favoriteCount) {
                 container.classList.add("hide");
             } 
-            
             if (!favoriteCount) {
                 container.classList.remove("hide");
             }
-
         });
     }
 
@@ -346,7 +339,6 @@ import imageLoader from '../components/images/imageLoader';
         html += '<h1>' + globalize.translate('MessageNothingHere') + '</h1>';
         html += '<p>' + globalize.translate('MessageNoFavoritesAvailable') + '</p>';
         container.innerHTML = html;
-
     }
 
 class FavoritesTab {
@@ -366,7 +358,6 @@ class FavoritesTab {
         const mutationObserverConfig = {childList: true, subtree: true};
         const observer = new MutationObserver(() => toggleNoItemsContent(this.apiClient, this.noItemsContent));
         observer.observe(this.sectionsContainer, mutationObserverConfig);
-
     }
 
     onResume(options) {
@@ -387,7 +378,7 @@ class FavoritesTab {
                 focusManager.autoFocus(view);
             }
         })
-        .then(toggleNoItemsContent(apiClient, noItemsContent));
+        .then(() => toggleNoItemsContent(apiClient, noItemsContent));
     }
 
     onPause() {
